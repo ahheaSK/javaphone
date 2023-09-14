@@ -16,10 +16,13 @@ import com.makara.java.kit.javahome.service.util.PageUtil;
 import com.makara.java.kit.javahome.spec.BrandFilter;
 import com.makara.java.kit.javahome.spec.BrandSpec;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
 	@Autowired
-	private BrandRepository brandRepository;
+	private final BrandRepository brandRepository;
 
 	@Override
 	public Brand create(Brand brand) {
@@ -76,10 +79,6 @@ public class BrandServiceImpl implements BrandService {
 		BrandSpec brandSpec = new BrandSpec(brandFilter);
 
 		Pageable pageable = PageUtil.getPageable(pageNumber, pageLimit);
-
-		// Pageable
-		// Page<Brand> findAll = brandRepository.findAll(brandSpec,
-		// org.springframework.data.domain.Pageable.ofSize(0));
 
 		Page<Brand> page = brandRepository.findAll(brandSpec, pageable);
 		return page;
