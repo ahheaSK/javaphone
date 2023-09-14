@@ -1,5 +1,7 @@
 package com.makara.java.kit.javahome.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +30,16 @@ public class BrandServiceImpl implements BrandService {
 		brand.setName(brandUpdate.getName()); // @TODO improve update
 		return brandRepository.save(brand);
 	}
+	@Override
+	public List<Brand> getBrands() {
+		// TODO Auto-generated method stub
+		return brandRepository.findAll();
+	}
+	@Override
+	public List<Brand> getBrands(String name) {
+		return brandRepository.findByNameContaining(name);
+	}
+	
+	
 
 }
