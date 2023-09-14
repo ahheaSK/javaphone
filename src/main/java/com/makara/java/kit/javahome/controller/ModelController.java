@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.makara.java.kit.javahome.dto.ModelDTO;
 import com.makara.java.kit.javahome.entity.Model;
-import com.makara.java.kit.javahome.mapper.ModelMapper;
+import com.makara.java.kit.javahome.mapper.ModelEntityMapper;
 import com.makara.java.kit.javahome.service.ModelService;
 
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/models")
 public class ModelController {
 	private final ModelService modelService;
-	private final ModelMapper modelMapper;
+	private final ModelEntityMapper modelMapper;
 	
 
 	@PostMapping

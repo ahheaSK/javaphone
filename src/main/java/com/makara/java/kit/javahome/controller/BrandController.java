@@ -1,8 +1,8 @@
 package com.makara.java.kit.javahome.controller;
 
+import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,17 +15,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.makara.java.kit.javahome.dto.BrandDTO;
+import com.makara.java.kit.javahome.dto.ModelDTO;
 import com.makara.java.kit.javahome.dto.PageDTO;
 import com.makara.java.kit.javahome.entity.Brand;
+import com.makara.java.kit.javahome.entity.Model;
 import com.makara.java.kit.javahome.mapper.BrandMapper;
+import com.makara.java.kit.javahome.mapper.ModelEntityMapper;
 import com.makara.java.kit.javahome.service.BrandService;
+import com.makara.java.kit.javahome.service.ModelService;
+
+import lombok.RequiredArgsConstructor;
 
 
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("brands")
 public class BrandController {
-	@Autowired
-	private BrandService brandService;
+	
+	private final BrandService brandService;
+	private final ModelService modelService;
+	private final ModelEntityMapper modelMapper;
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<?> create(@RequestBody BrandDTO brandDTO) {
@@ -55,6 +65,15 @@ public class BrandController {
 		
 		return ResponseEntity.ok(pageDTO);
 		
+	}
+	
+	@GetMapping("{id}/models")
+	public ResponseEntity<?> getModelsByBrand(@PathVariable("id") Integer brandId){
+		List<Model> brands = modelService.getByBrand(brandId);
+		List<ModelDTO> list = brands.stream()
+			.map(modelMapper::toModelDTO)
+			.toList();
+		return ResponseEntity.ok(list);
 	}
 	
 }

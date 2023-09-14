@@ -9,8 +9,8 @@ import com.makara.java.kit.javahome.entity.Model;
 import com.makara.java.kit.javahome.service.BrandService;
 
 @Mapper( componentModel = "spring", uses = {BrandService.class})
-public interface ModelMapper {
-	ModelMapper INSTANCE = Mappers.getMapper(ModelMapper.class);
+public interface ModelEntityMapper {
+	ModelEntityMapper INSTANCE = Mappers.getMapper(ModelEntityMapper.class);
 	
 	@Mapping(target = "brand", source = "brandId")
 	Model toModel(ModelDTO dto);
