@@ -9,8 +9,8 @@ import com.makara.java.kit.javahome.entity.Brand;
 
 public interface BrandService {
 	Brand create(Brand brand);
-	Brand getById(Integer id);
-	Brand update(Integer id, Brand brandUpdate);
+	Brand getById(Long id);
+	Brand update(Long id, Brand brandUpdate);
 	
 	List<Brand> getBrands();
 	List<Brand> getBrands(String name);
