@@ -3,12 +3,14 @@ package com.makara.java.kit.javahome.controller;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.makara.java.kit.javahome.dto.PriceDTO;
 import com.makara.java.kit.javahome.dto.ProductDTO;
 import com.makara.java.kit.javahome.dto.ProductImportDTO;
 import com.makara.java.kit.javahome.entity.Product;
@@ -40,4 +42,11 @@ public class ProductController {
 		productService.importProduct(importDTO);
 		return ResponseEntity.ok().build();
 	}
+	
+	@PostMapping("{productId}/setSalePrice")
+	public ResponseEntity<?> setSalePrice(@PathVariable Long productId, @RequestBody PriceDTO priceDTO){
+		productService.setSalePrice(productId, priceDTO.getPrice());
+		return ResponseEntity.ok().build();
+	}
+
 }

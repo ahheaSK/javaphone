@@ -1,5 +1,7 @@
 package com.makara.java.kit.javahome.service.impl;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Service;
 
 import com.makara.java.kit.javahome.dto.ProductImportDTO;
@@ -50,6 +52,19 @@ public class ProductServiceImpl implements ProductService {
 		// save product import history
 		ProductImportHistory importHistory = productMapper.toProductImportHistory(importDTO, product);
 		importHistoryRepository.save(importHistory);
+	}
+
+	@Override
+	public void setSalePrice(Long productId, BigDecimal price) {
+		Product product = getById(productId);
+		product.setSalePrice(price);
+		productRepository.save(product);
+	}
+
+	@Override
+	public void validateStock(Long productId, Integer numberOfUnit) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
