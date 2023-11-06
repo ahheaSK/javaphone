@@ -14,6 +14,7 @@ import com.makara.java.kit.javahome.entity.Product;
 import com.makara.java.kit.javahome.entity.Sale;
 import com.makara.java.kit.javahome.entity.SaleDetail;
 import com.makara.java.kit.javahome.exception.ApiException;
+import com.makara.java.kit.javahome.exception.ResourceNotFoundException;
 import com.makara.java.kit.javahome.repository.ProductRepository;
 import com.makara.java.kit.javahome.repository.SaleDetailRepository;
 import com.makara.java.kit.javahome.repository.SaleRepository;
@@ -94,5 +95,37 @@ public class SaleServiceImpl implements SaleService{
 				throw new ApiException(HttpStatus.BAD_REQUEST, "Product [%s] is not enough in stock".formatted(product.getName()));
 			}
 		});
+	}
+
+	@Override
+	public void cancelSale(Long saleId) {
+		// update sale status
+				Sale sale = getById(saleId);
+				sale.setActive(false);
+				saleRepository.save(sale);
+				
+				// update stock
+				List<SaleDetail> saleDetails = saleDetailRepository.findBySaleId(saleId);
+				
+				List<Long> productIds = saleDetails.stream()
+					.map(sd -> sd.getProduct().getId())
+					.toList();
+				
+				List<Product> products = productRepository.findAllById(productIds);
+				Map<Long, Product> productMap = products.stream()
+					.collect(Collectors.toMap(Product::getId, Function.identity()));
+				
+				saleDetails.forEach(sd ->{
+					 Product product = productMap.get(sd.getProduct().getId());
+					 product.setAvailableUnit(product.getAvailableUnit() + sd.getUnit());
+					 productRepository.save(product);
+				});
+		
+	}
+
+	@Override
+	public Sale getById(Long saleId) {
+		return saleRepository.findById(saleId)
+				.orElseThrow(() -> new ResourceNotFoundException("Sale", saleId));
 	}
 }
