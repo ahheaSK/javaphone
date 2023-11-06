@@ -2,6 +2,7 @@ package com.makara.java.kit.javahome.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,7 +25,7 @@ public class ProductImportHistory {
 	private Long id;
 	
 	@Column(name = "date_import")
-	private LocalDate dateImport;
+	private LocalDateTime dateImport;
 	
 	@Column(name = "import_unit")
 	private Integer importUnit;

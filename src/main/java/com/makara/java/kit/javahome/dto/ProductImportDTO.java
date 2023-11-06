@@ -1,7 +1,7 @@
 package com.makara.java.kit.javahome.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
@@ -21,5 +21,5 @@ public class ProductImportDTO {
 	private BigDecimal importPrice;
 	
 	@NotNull(message = "Import date can't be null")
-	private LocalDate importDate;
+	private LocalDateTime importDate;
 }
