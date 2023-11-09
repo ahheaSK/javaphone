@@ -3,18 +3,22 @@ package com.makara.java.kit.javahome.config.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 import com.makara.java.kit.javahome.config.jwt.JwtLoginFilter;
 import com.makara.java.kit.javahome.config.jwt.TokenVerifyFilter;
+
+import io.swagger.models.HttpMethod;
 
 
 @Configuration
@@ -22,50 +26,65 @@ import com.makara.java.kit.javahome.config.jwt.TokenVerifyFilter;
 		  prePostEnabled = true, 
 		  securedEnabled = true, 
 		  jsr250Enabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+public class SecurityConfig {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private UserDetailsService userDetailsService;
 	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	private AuthenticationConfiguration authenticationConfiguration;
+	
+//	@Override
+//	protected void configure(HttpSecurity http) throws Exception {
+//		http.csrf().disable()
+//			.addFilter(new JwtLoginFilter(authenticationManager()))
+//			.addFilterAfter(new TokenVerifyFilter(), JwtLoginFilter.class)
+//			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//			.and()
+//			.authorizeHttpRequests()
+//			.antMatchers("/","index.html","css/**","js/**").permitAll()
+//			.anyRequest()
+//			.authenticated();
+//	}
+	
+	@Bean
+	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 		http.csrf().disable()
-			.addFilter(new JwtLoginFilter(authenticationManager()))
+			.addFilter(new JwtLoginFilter(authenticationManager(authenticationConfiguration)))
 			.addFilterAfter(new TokenVerifyFilter(), JwtLoginFilter.class)
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.authorizeHttpRequests()
 			.antMatchers("/","index.html","css/**","js/**").permitAll()
+			//.antMatchers(HttpMethod.PUT, "/brands/**").hasAuthority(PermissionEnum.BRAND_WRITE.getDescription())
+			//.antMatchers(HttpMethod.PUT, "/brands/**").has(PermissionEnum.BRAND_WRITE.getDescription())
 			.anyRequest()
 			.authenticated();
+		
+		return http.build();
 	}
 	
-//	@Bean
+	@Bean
+	AuthenticationManager authenticationManager(
+	        AuthenticationConfiguration authenticationConfiguration) throws Exception {
+	    return authenticationConfiguration.getAuthenticationManager();
+	}
+	
 //	@Override
-//	protected UserDetailsService userDetailsService() {	
-//		
-//		UserDetails user1 = User.builder()
-//				.username("dara")
-//				.password(passwordEncoder.encode("dara123"))
-//				//.roles(RoleEnum.SALE.name()) // ROLE_ADMIN
-//				.authorities(RoleEnum.SALE.getAuthorities()) // collection of GrantedAuthorrity
-//				.build();
-//		
-//		UserDetails user2 = User.builder()
-//				.username("thida")
-//				.password(passwordEncoder.encode("thida123"))
-//				//.roles("ADMIN") // ROLE_ADMIN
-//				.authorities(RoleEnum.ADMIN.getAuthorities()) // collection of GrantedAuthorrity
-//				.build();
-//				
-//		UserDetailsService userDetailsService = new InMemoryUserDetailsManager(user1, user2);
-//		
-//		return userDetailsService;
+//	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//		auth.authenticationProvider(getAuthenticationProvider());
+//	}
+//	
+//	@Bean
+//	public AuthenticationProvider getAuthenticationProvider() {
+//		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+//		authenticationProvider.setUserDetailsService(userDetailsService);
+//		authenticationProvider.setPasswordEncoder(passwordEncoder);
+//		return authenticationProvider;
 //	}
 	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(getAuthenticationProvider());
 	}
 	
